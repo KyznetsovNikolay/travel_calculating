@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+
+  # Nginx
+  web:
+    container_name: calculator.web
+    build: ./nginx
+    ports:
+      - ${NGINX_HOST_HTTP_PORT:-8073}:80
+    depends_on:
+      - app
+    restart: always
+    volumes:
+      - ./../:/www/app
+
+  # PHP-fpm
+  app:
+    container_name: calculator.app
+    build: ./php-fpm
+    user: ${UID:-1000}:${GID:-1000}
+    environment:
+      PHP_IDE_CONFIG: "serverName=Docker"
+    volumes:
+      - ./../:/www/app
+    working_dir: /www/app
+
